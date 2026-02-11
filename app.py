@@ -94,8 +94,8 @@ async def process_speech(
         )
         response.append(gather)
         xml_response = str(response)
-    logger.info(f"Sending TwiML response: {xml_response[:200]}...")  # Log first 200 chars
-    return Response(content=xml_response, media_type="application/xml")
+        logger.info(f"Sending TwiML response (no speech): {xml_response[:200]}...")
+        return Response(content=xml_response, media_type="application/xml")
     
     logger.info(f"User said: {SpeechResult}")
     
