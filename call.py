@@ -13,9 +13,13 @@ auth_token = os.getenv("TWILIO_AUTH_TOKEN")
 client = Client(account_sid, auth_token)
 
 # Make a call that will be handled by the webhook server
-# Replace 'https://yourdomain.com' with your actual server URL (use ngrok for local testing)
+# IMPORTANT: Twilio REQUIRES HTTPS for webhooks. Options:
+# 1. Use ngrok: "https://abc123.ngrok.io/voice" (recommended for testing)
+# 2. Set up SSL certificate on your server
+# 3. For testing only, try HTTP (may not work): "http://65.0.173.124:8006/voice"
+# The endpoint MUST be /voice (as defined in app.py)
 call = client.calls.create(
-    url="https://yourdomain.com/voice",  # Replace with your server URL + /voice endpoint
+    url="http://65.0.173.124:8006/voice",  # Change to HTTPS when SSL is set up
     to="+917447425465",
     from_="+12059645992",
 )

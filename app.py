@@ -31,6 +31,13 @@ async def voice_webhook(request: Request):
     Webhook endpoint for incoming calls.
     Greets the caller and listens for their input.
     """
+    try:
+        # Log the incoming request for debugging
+        body = await request.body()
+        logger.info(f"Received call webhook. Body: {body.decode() if body else 'Empty'}")
+    except Exception as e:
+        logger.warning(f"Could not read request body: {e}")
+    
     response = VoiceResponse()
     
     # Greet the caller
@@ -57,7 +64,9 @@ async def voice_webhook(request: Request):
         language="en-US"
     )
     
-    return Response(content=str(response), media_type="application/xml")
+    xml_response = str(response)
+    logger.info(f"Sending TwiML response: {xml_response[:200]}...")  # Log first 200 chars
+    return Response(content=xml_response, media_type="application/xml")
 
 
 @app.post("/process")
@@ -84,7 +93,9 @@ async def process_speech(
             method="POST"
         )
         response.append(gather)
-        return Response(content=str(response), media_type="application/xml")
+        xml_response = str(response)
+    logger.info(f"Sending TwiML response: {xml_response[:200]}...")  # Log first 200 chars
+    return Response(content=xml_response, media_type="application/xml")
     
     logger.info(f"User said: {SpeechResult}")
     
@@ -147,7 +158,9 @@ async def process_speech(
         )
         response.hangup()
     
-    return Response(content=str(response), media_type="application/xml")
+    xml_response = str(response)
+    logger.info(f"Sending TwiML response: {xml_response[:200]}...")  # Log first 200 chars
+    return Response(content=xml_response, media_type="application/xml")
 
 
 @app.get("/")
@@ -158,4 +171,4 @@ async def root():
 
 if __name__ == "__main__":
     import uvicorn
-    uvicorn.run(app, host="0.0.0.0", port=8000)
+    uvicorn.run(app, host="0.0.0.0", port=8006)
